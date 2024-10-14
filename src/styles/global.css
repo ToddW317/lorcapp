@@ -1,0 +1,36 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Add any custom styles here */
+.bg-background {
+  background-color: #f3f4f6;
+}
+
+.text-secondary {
+  color: #4b5563;
+}
+
+.bg-primary {
+  background-color: #3b82f6;
+}
+
+.text-primary {
+  color: #3b82f6;
+}
+
+.hover\:bg-primary-dark:hover {
+  background-color: #2563eb;
+}
+
+/* Add more custom styles as needed */

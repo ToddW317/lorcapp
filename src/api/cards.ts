@@ -1,52 +1,55 @@
 import axios from 'axios'
+import { Card } from '../types/card'
 
-const API_URL = 'https://api.lorcast.com/v0' // Changed back to v0
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api'; // Make sure this matches your server port
 
-export interface Card {
-  id: string
-  name: string
-  cost: number
-  inkwell: number
-  type: string
-  subtype: string
-  text: string
-  flavor: string
-  strength: number
-  willpower: number
-  lore: number
-  rarity: string
-  number: string
-  artist: string
-  set: string
-  image: string
-  tcgplayer_id: number
-  tcgplayer_url: string
-  tcgplayer_price: {
-    low: number
-    mid: number
-    high: number
-    market: number
-  }
-}
-
-export async function fetchCards(searchTerm: string = '', page: number = 1, pageSize: number = 20): Promise<{ cards: Card[], total: number }> {
+export async function fetchCards(searchTerm: string = ''): Promise<{ cards: Card[], total: number }> {
   try {
-    const response = await axios.get(`${API_URL}/cards/search`, {
+    console.log('Fetching cards with search term:', searchTerm)
+    const response = await axios.get(`${API_URL}/cards`, {
       params: { 
-        q: searchTerm,
-        page,
-        pageSize
+        search: searchTerm
       },
       headers: {
         'Accept': 'application/json'
       }
     })
+    
+    if (response.data.error) {
+      throw new Error(response.data.error)
+    }
+    
+    const cards: Card[] = Array.isArray(response.data) 
+      ? response.data.map(mapApiCardToCardType)
+      : [mapApiCardToCardType(response.data)]
+    
     return {
-      cards: response.data.data,
-      total: response.data.total
+      cards,
+      total: cards.length
     }
   } catch (error) {
     console.error('Error fetching cards:', error)
     throw error
+  }
+}
+
+function mapApiCardToCardType(apiCard: any): Card {
+  return {
+    id: apiCard.id || `${apiCard.name}-${apiCard.number}`,
+    name: apiCard.name || '',
+    type: apiCard.type || '',
+    subtype: apiCard.subtype || '',
+    inkwell: apiCard.inkwell || 0,
+    strength: apiCard.strength,
+    willpower: apiCard.willpower,
+    lore: apiCard.lore,
+    image: apiCard.image || '',
+    text: apiCard.text,
+    flavor: apiCard.flavor,
+    color: apiCard.color || '',
+    rarity: apiCard.rarity || '',
+    set: apiCard.set || '',
+    number: apiCard.number || '',
+    artist: apiCard.artist || ''
   }
 }

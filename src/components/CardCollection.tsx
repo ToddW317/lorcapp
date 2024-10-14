@@ -1,99 +1,52 @@
 import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { fetchCards, Card } from '../api/cards'
+import { fetchCards } from '../api/cards'
+import { Card } from '../types/card'
 
 function CardCollection() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [page, setPage] = useState(1)
-  const pageSize = 20
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['cards', searchTerm, page],
-    queryFn: () => fetchCards(searchTerm, page, pageSize),
-    retry: 1,
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['cards', searchTerm],
+    queryFn: () => fetchCards(searchTerm),
+    staleTime: Infinity,
   })
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setPage(1)
-  }
+  if (isLoading) return <div className="text-center p-4">Loading...</div>
+  if (error) return <div className="text-center p-4 text-red-500">An error occurred: {(error as Error).message}</div>
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Card Collection</h1>
-      
-      <form onSubmit={handleSearch} className="mb-6">
-        <div className="flex">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search cards..."
-            className="flex-grow p-2 border rounded-l-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-200"
-          >
-            Search
-          </button>
-        </div>
-      </form>
-
-      {isLoading && <div className="text-center">Loading...</div>}
-      {error && (
-        <div className="text-center text-red-500">
-          Error loading cards. Please try again later.
-        </div>
-      )}
-
-      {data && data.cards && (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {data.cards.map((card) => (
-              <CardItem key={card.id} card={card} />
-            ))}
+    <div className="p-4">
+      <input 
+        type="text" 
+        value={searchTerm} 
+        onChange={(e) => setSearchTerm(e.target.value)} 
+        placeholder="Search cards..."
+        className="w-full p-2 mb-4 border border-gray-300 rounded"
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {data?.cards.map((card: Card, index: number) => (
+          <div key={card.id || `${card.name}-${index}`} className="border p-4 rounded shadow">
+            <h2 className="text-xl font-bold mb-2">{card.name}</h2>
+            <p><span className="font-semibold">Type:</span> {card.type} {card.subtype && `- ${card.subtype}`}</p>
+            <p><span className="font-semibold">Ink Cost:</span> {card.inkwell}</p>
+            <p><span className="font-semibold">Strength:</span> {card.strength}</p>
+            <p><span className="font-semibold">Willpower:</span> {card.willpower}</p>
+            <p><span className="font-semibold">Lore:</span> {card.lore}</p>
+            <p><span className="font-semibold">Color:</span> {card.color}</p>
+            <p><span className="font-semibold">Rarity:</span> {card.rarity}</p>
+            <p><span className="font-semibold">Set:</span> {card.set}</p>
+            <p><span className="font-semibold">Number:</span> {card.number}</p>
+            <p><span className="font-semibold">Artist:</span> {card.artist}</p>
+            {card.text && <p><span className="font-semibold">Text:</span> {card.text}</p>}
+            {card.flavor && <p><span className="font-semibold">Flavor:</span> <em>{card.flavor}</em></p>}
+            {card.image && <img src={card.image} alt={card.name} className="mt-2 w-full" />}
           </div>
-          <div className="mt-6 flex justify-between items-center">
-            <button
-              onClick={() => setPage((old) => Math.max(old - 1, 1))}
-              disabled={page === 1}
-              className={`px-4 py-2 rounded-md ${
-                page === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-            >
-              Previous
-            </button>
-            <span>Page {page} of {Math.ceil((data.total || 0) / pageSize)}</span>
-            <button
-              onClick={() => setPage((old) => old + 1)}
-              disabled={!data.total || page === Math.ceil(data.total / pageSize)}
-              className={`px-4 py-2 rounded-md ${
-                !data.total || page === Math.ceil(data.total / pageSize) ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-            >
-              Next
-            </button>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
-
-function CardItem({ card }: { card: Card }) {
-  return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <img src={card.image} alt={card.name} className="w-full h-48 object-cover" />
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2">{card.name}</h3>
-        <p className="text-sm text-gray-600 mb-2">{card.type} - {card.subtype}</p>
-        <p className="text-sm mb-2">Cost: {card.cost} | Inkwell: {card.inkwell}</p>
-        <p className="text-sm mb-2">Strength: {card.strength} | Willpower: {card.willpower} | Lore: {card.lore}</p>
-        <p className="text-sm font-semibold mt-2">
-          Market Price: ${card.tcgplayer_price?.market?.toFixed(2) || 'N/A'}
-        </p>
+        ))}
       </div>
+      {data?.cards.length === 0 && (
+        <p className="text-center mt-4">No cards found. Try a different search term.</p>
+      )}
     </div>
   )
 }

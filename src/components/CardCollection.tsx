@@ -1,7 +1,7 @@
 import React, { useState, useTransition } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCards } from '../api/cards';
-import CardGrid from './CardGrid';
+import Collection from './Collection';
 import { AddCardToDeck } from './AddCardToDeck';
 
 function CardCollection() {
@@ -23,10 +23,7 @@ function CardCollection() {
 
   return (
     <div className="p-4">
-      {cards && <CardGrid cards={cards} onAddToDeck={handleAddToDeck} />}
-      {cards && cards.length === 0 && (
-        <p className="text-center mt-4">No cards found.</p>
-      )}
+      {cards && <Collection cards={cards} onAddToDeck={handleAddToDeck} />}
       {selectedCardId && (
         <AddCardToDeck
           cardId={selectedCardId}

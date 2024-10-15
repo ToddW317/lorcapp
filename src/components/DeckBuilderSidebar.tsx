@@ -20,7 +20,7 @@ function DeckBuilderSidebar({ isOpen, onClose }: DeckBuilderSidebarProps) {
   const dispatch = useDispatch()
   const [deckName, setDeckName] = useState('')
   const [selectedColors, setSelectedColors] = useState<string[]>([])
-  const [selectedCards, setSelectedCards] = useState<{ id: string; name: string; quantity: number }[]>([])
+  const [selectedCards, setSelectedCards] = useState<{ id: string; name: string; quantity: number; cost: number; color: string; type: string; rarity: string }[]>([])
 
   const handleColorToggle = (color: string) => {
     setSelectedColors(prev => 

@@ -34,6 +34,7 @@ function MatchLogger({ onClose }: MatchLoggerProps) {
       date: new Date().toISOString(),
       playerLore,
       opponentLore,
+      onPlay: true, // or false, depending on your logic
     }));
     onClose();
   };

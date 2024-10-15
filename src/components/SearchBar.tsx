@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 interface SearchBarProps {
-  onSearch: (term: string) => void
+  onSearch: (searchTerm: string) => void;
 }
 
-function SearchBar({ onSearch }: SearchBarProps) {
-  const [searchTerm, setSearchTerm] = useState('')
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSearch(searchTerm)
-  }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearch(searchTerm);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
@@ -25,7 +25,7 @@ function SearchBar({ onSearch }: SearchBarProps) {
         Search
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default SearchBar
+export default SearchBar;

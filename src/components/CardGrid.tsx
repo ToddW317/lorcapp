@@ -5,14 +5,15 @@ import CardItem from './CardItem'
 
 interface CardGridProps {
   cards: Card[]
+  onAddToDeck: (cardId: string) => void
 }
 
-const CardGrid: React.FC<CardGridProps> = ({ cards }) => {
+function CardGrid({ cards, onAddToDeck }: CardGridProps) {
   return (
     <Grid container spacing={2}>
       {cards.map((card) => (
         <Grid item xs={6} sm={4} md={3} key={card.id}>
-          <CardItem card={card} />
+          <CardItem card={card} onAddToDeck={onAddToDeck} />
         </Grid>
       ))}
     </Grid>

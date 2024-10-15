@@ -7,7 +7,7 @@ module.exports = function(app) {
       target: 'https://api.lorcast.com',
       changeOrigin: true,
       pathRewrite: {
-        '^/api': '/api', // remove base path
+        '^/api': '/api',
       },
       headers: {
         'Access-Control-Allow-Origin': '*',

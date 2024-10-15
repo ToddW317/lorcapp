@@ -36,10 +36,28 @@ interface DecksState {
   matches: Match[];
 }
 
-const initialState: DecksState = {
-  decks: [],
-  matches: [],
+const loadState = (): DecksState => {
+  try {
+    const serializedState = localStorage.getItem('decksState');
+    if (serializedState === null) {
+      return { decks: [], matches: [] };
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return { decks: [], matches: [] };
+  }
 };
+
+const saveState = (state: DecksState) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    localStorage.setItem('decksState', serializedState);
+  } catch {
+    // Ignore write errors
+  }
+};
+
+const initialState: DecksState = loadState();
 
 export const decksSlice = createSlice({
   name: 'decks',
@@ -52,15 +70,18 @@ export const decksSlice = createSlice({
         matchStats: { wins: 0, losses: 0, draws: 0 },
       };
       state.decks.push(newDeck);
+      saveState(state);
     },
     updateDeck: (state, action: PayloadAction<Deck>) => {
       const index = state.decks.findIndex(deck => deck.id === action.payload.id);
       if (index !== -1) {
         state.decks[index] = action.payload;
+        saveState(state);
       }
     },
     deleteDeck: (state, action: PayloadAction<string>) => {
       state.decks = state.decks.filter(deck => deck.id !== action.payload);
+      saveState(state);
     },
     addMatch: (state, action: PayloadAction<Omit<Match, 'id'>>) => {
       const newMatch: Match = {
@@ -75,6 +96,7 @@ export const decksSlice = createSlice({
         else if (newMatch.result === 'loss') deck.matchStats.losses++;
         else if (newMatch.result === 'draw') deck.matchStats.draws++;
       }
+      saveState(state);
     },
     addCardToDeck: (state, action: PayloadAction<{ deckId: string; cardId: string; quantity: number }>) => {
       const { deckId, cardId, quantity } = action.payload;
@@ -86,11 +108,11 @@ export const decksSlice = createSlice({
         } else {
           deck.cards.push({ id: cardId, quantity });
         }
+        saveState(state);
       }
     },
   },
 });
 
 export const { addDeck, updateDeck, deleteDeck, addMatch, addCardToDeck } = decksSlice.actions;
-
 export default decksSlice.reducer;

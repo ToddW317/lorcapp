@@ -16,13 +16,15 @@ interface FilterSidebarProps {
 }
 
 function FilterSidebar({ cards, onFilterChange, filters }: FilterSidebarProps) {
-  const uniqueValues = {
-    colors: Array.from(new Set(cards.map(card => card.color).filter(Boolean))),
-    types: Array.from(new Set(cards.map(card => card.type).filter(Boolean))),
-    rarities: Array.from(new Set(cards.map(card => card.rarity).filter(Boolean))),
-    costs: Array.from(new Set(cards.map(card => card.cost?.toString()).filter(Boolean))),
-    inkwell: Array.from(new Set(cards.map(card => card.inkwell?.toString()).filter(Boolean))),
-  };
+  const uniqueValues = React.useMemo(() => {
+    return {
+      colors: Array.from(new Set(cards.map(card => card.color))),
+      types: Array.from(new Set(cards.map(card => card.type))),
+      rarities: Array.from(new Set(cards.map(card => card.rarity))),
+      costs: Array.from(new Set(cards.map(card => card.cost?.toString() || ''))),
+      inkwell: Array.from(new Set(cards.map(card => card.inkwell?.toString() || ''))),
+    };
+  }, [cards]);
 
   const handleFilterChange = (filterType: keyof Filters, value: string) => {
     const updatedFilters = { ...filters };
@@ -31,7 +33,6 @@ function FilterSidebar({ cards, onFilterChange, filters }: FilterSidebarProps) {
     } else {
       updatedFilters[filterType].push(value);
     }
-    console.log('Updated filters:', updatedFilters);
     onFilterChange(updatedFilters);
   };
 
@@ -56,11 +57,11 @@ function FilterSidebar({ cards, onFilterChange, filters }: FilterSidebarProps) {
   return (
     <div className="w-64 bg-white p-4 rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">Filters</h2>
-      {renderFilterSection('Colors', 'colors', uniqueValues.colors as string[])}
-      {renderFilterSection('Types', 'types', uniqueValues.types as string[])}
-      {renderFilterSection('Rarities', 'rarities', uniqueValues.rarities as string[])}
-      {renderFilterSection('Costs', 'costs', uniqueValues.costs as string[])}
-      {renderFilterSection('Inkwell', 'inkwell', uniqueValues.inkwell as string[])}
+      {renderFilterSection('Colors', 'colors', uniqueValues.colors)}
+      {renderFilterSection('Types', 'types', uniqueValues.types)}
+      {renderFilterSection('Rarities', 'rarities', uniqueValues.rarities)}
+      {renderFilterSection('Costs', 'costs', uniqueValues.costs)}
+      {renderFilterSection('Inkwell', 'inkwell', uniqueValues.inkwell)}
     </div>
   );
 }

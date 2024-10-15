@@ -29,8 +29,8 @@ app.get('/api/cards', async (req, res) => {
       }
     });
 
-    console.log('Lorcana API response status:', response.status);
-    console.log('Lorcana API response data:', response.data);
+    // console.log('Lorcana API response status:', response.status);
+    // console.log('Lorcana API response data:', response.data);
 
     res.json(response.data);
   } catch (error) {

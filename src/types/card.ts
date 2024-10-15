@@ -3,13 +3,13 @@ export interface Card {
   name: string
   type: string
   subtype: string
-  inkwell: number  // This is the 'ink' cost
+  inkwell: number
   strength?: number
   willpower?: number
   lore?: number
   image: string
   text?: string
-  flavor?: string  // This is the 'flavor_text'
+  flavor?: string
   color: string
   rarity: string
   set: string

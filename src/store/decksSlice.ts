@@ -4,7 +4,15 @@ export interface Deck {
   id: string;
   name: string;
   colors: string[];
-  cards: { id: string; quantity: number }[];
+  cards: {
+    id: string;
+    name: string;
+    quantity: number;
+    cost: number;
+    color: string;
+    type: string;
+    rarity: string;
+  }[];
   matchStats: {
     wins: number;
     losses: number;
@@ -20,6 +28,7 @@ export interface Match {
   date: string;
   playerLore: number;
   opponentLore: number;
+  onPlay: boolean;
 }
 
 interface DecksState {
@@ -67,9 +76,21 @@ export const decksSlice = createSlice({
         else if (newMatch.result === 'draw') deck.matchStats.draws++;
       }
     },
+    addCardToDeck: (state, action: PayloadAction<{ deckId: string; cardId: string; quantity: number }>) => {
+      const { deckId, cardId, quantity } = action.payload;
+      const deck = state.decks.find(d => d.id === deckId);
+      if (deck) {
+        const existingCard = deck.cards.find(c => c.id === cardId);
+        if (existingCard) {
+          existingCard.quantity += quantity;
+        } else {
+          deck.cards.push({ id: cardId, quantity });
+        }
+      }
+    },
   },
 });
 
-export const { addDeck, updateDeck, deleteDeck, addMatch } = decksSlice.actions;
+export const { addDeck, updateDeck, deleteDeck, addMatch, addCardToDeck } = decksSlice.actions;
 
 export default decksSlice.reducer;

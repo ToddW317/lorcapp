@@ -9,6 +9,11 @@ interface CardItemProps {
 function CardItem({ card, onAddToDeck }: CardItemProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + '...';
+  };
+
   return (
     <div 
       className="relative"
@@ -43,23 +48,23 @@ function CardItem({ card, onAddToDeck }: CardItemProps) {
           )}
           {card.text && (
             <div className="mb-2 flex-grow overflow-y-auto">
-              <p className="text-xs text-gray-700">{card.text}</p>
+              <p className="text-xs text-gray-700">{truncateText(card.text, 140)}</p>
             </div>
           )}
           {card.flavor && (
-            <p className="text-xs italic text-gray-500 mb-2">{card.flavor}</p>
+            <p className="text-xs italic text-gray-500 mb-2">{truncateText(card.flavor, 140)}</p>
           )}
+          <button
+            onClick={() => onAddToDeck(card.id)}
+            className="mt-auto bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200"
+          >
+            Add to Deck
+          </button>
         </div>
-        <button
-          onClick={() => onAddToDeck(card.id)}
-          className="w-full bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 transition-colors duration-200 font-semibold text-sm"
-        >
-          Add to Deck
-        </button>
       </div>
 
       {isHovered && (
-        <div className="absolute z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-auto">
+        <div className="absolute z-50 top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-auto">
           <img 
             src={card.image} 
             alt={card.name} 

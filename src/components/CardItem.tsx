@@ -15,7 +15,7 @@ function CardItem({ card, onAddToDeck }: CardItemProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
       <div className="mb-2">
-        <img src={card.imageUrl} alt={card.name} className="w-full h-auto rounded-md" />
+        <img src={card.image} alt={card.name} className="w-full h-auto rounded-md" />
       </div>
       <div className="mb-2">
         <h3 className="text-lg font-semibold">{card.name}</h3>

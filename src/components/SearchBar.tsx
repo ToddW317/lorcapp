@@ -1,31 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface SearchBarProps {
-  onSearch: (searchTerm: string) => void;
+  onSearch: (term: string) => void;
+  searchTerm: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSearch(searchTerm);
-  };
-
+function SearchBar({ onSearch, searchTerm }: SearchBarProps) {
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
+    <div className="mb-4">
       <input
         type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search cards..."
-        className="border rounded px-2 py-1 mr-2"
+        value={searchTerm}
+        onChange={(e) => onSearch(e.target.value)}
+        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <button type="submit" className="bg-blue-500 text-white px-4 py-1 rounded">
-        Search
-      </button>
-    </form>
+    </div>
   );
-};
+}
 
 export default SearchBar;

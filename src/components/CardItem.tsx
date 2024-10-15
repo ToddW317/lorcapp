@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card } from '../types/card';
-import { cn } from '../utils/cn';
 
 interface CardItemProps {
   card: Card;
@@ -9,26 +8,44 @@ interface CardItemProps {
 
 function CardItem({ card, onAddToDeck }: CardItemProps) {
   return (
-    <div className="border p-4 rounded shadow w-64 h-96 flex flex-col overflow-hidden">
-      {card.image && (
-        <img src={card.image} alt={card.name} className="w-full h-48 object-cover mb-2" />
-      )}
-      <h3 className="text-lg font-semibold truncate">{card.name}</h3>
-      <p className="text-sm text-gray-600 truncate">{card.type} {card.subtype && `- ${card.subtype}`}</p>
-      <p className="text-sm">Ink: {card.inkwell} | Color: {card.color}</p>
-      <p className="text-sm">Rarity: {card.rarity} | Set: {card.set}</p>
-      {(card.strength || card.willpower || card.lore) && (
-        <p className="text-sm truncate">
-          {card.strength !== null && `Str: ${card.strength} `}
-          {card.willpower !== null && `Will: ${card.willpower} `}
-          {card.lore !== null && `Lore: ${card.lore}`}
-        </p>
-      )}
-      {card.text && <p className={cn("text-xs mt-1 flex-grow overflow-y-auto", card.flavor ? "" : "mb-2")}>{card.text}</p>}
-      {card.flavor && <p className="text-xs mt-1 italic truncate">{card.flavor}</p>}
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col h-[32rem] w-64">
+      <div className="relative h-48">
+        {card.image && (
+          <img src={card.image} alt={card.name} className="w-full h-full object-cover" />
+        )}
+        <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded-full text-xs">
+          {card.inkwell}
+        </div>
+      </div>
+      <div className="p-4 flex flex-col flex-grow">
+        <h3 className="text-lg font-bold mb-2 text-gray-800">{card.name}</h3>
+        <div className="flex justify-between items-center mb-2 text-sm">
+          <span className="font-semibold text-gray-600">{card.type}</span>
+          <span className="font-semibold text-gray-600">{card.color}</span>
+        </div>
+        <div className="flex justify-between items-center mb-2 text-xs text-gray-500">
+          <span>{card.rarity}</span>
+          <span>{card.set}</span>
+        </div>
+        {(card.strength !== null || card.willpower !== null || card.lore !== null) && (
+          <div className="flex justify-between mb-2 text-xs font-bold">
+            {card.strength !== null && <span className="text-red-600">STR {card.strength}</span>}
+            {card.willpower !== null && <span className="text-blue-600">WILL {card.willpower}</span>}
+            {card.lore !== null && <span className="text-green-600">LORE {card.lore}</span>}
+          </div>
+        )}
+        {card.text && (
+          <div className="mb-2 flex-grow overflow-y-auto">
+            <p className="text-xs text-gray-700">{card.text}</p>
+          </div>
+        )}
+        {card.flavor && (
+          <p className="text-xs italic text-gray-500 mb-2">{card.flavor}</p>
+        )}
+      </div>
       <button
         onClick={() => onAddToDeck(card.id)}
-        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        className="w-full bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 transition-colors duration-200 font-semibold text-sm"
       >
         Add to Deck
       </button>

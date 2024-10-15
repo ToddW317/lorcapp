@@ -41,7 +41,7 @@ function Collection({ cards, onAddToDeck }: CollectionProps) {
   return (
     <div className="flex">
       <FilterSidebar cards={cards} onFilterChange={handleFilterChange} />
-      <div className="flex-1 p-4">
+      <div className="flex-1 pl-4">
         <SearchBar onSearch={handleSearch} />
         {filteredCards.length > 0 ? (
           <CardGrid cards={filteredCards} onAddToDeck={onAddToDeck} />

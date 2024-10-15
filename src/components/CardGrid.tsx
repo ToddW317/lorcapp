@@ -1,21 +1,21 @@
 import React from 'react'
+import { Grid } from '@mui/material'
 import { Card } from '../types/card'
 import CardItem from './CardItem'
 
 interface CardGridProps {
   cards: Card[]
-  onAddToDeck: (cardId: string) => void
 }
 
-function CardGrid({ cards, onAddToDeck }: CardGridProps) {
+const CardGrid: React.FC<CardGridProps> = ({ cards }) => {
   return (
-    <div className="p-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-y-12 gap-x-8 px-10">
-        {cards.map((card) => (
-          <CardItem key={card.id} card={card} onAddToDeck={onAddToDeck} />
-        ))}
-      </div>
-    </div>
+    <Grid container spacing={2}>
+      {cards.map((card) => (
+        <Grid item xs={6} sm={4} md={3} key={card.id}>
+          <CardItem card={card} />
+        </Grid>
+      ))}
+    </Grid>
   )
 }
 

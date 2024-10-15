@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Drawer, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { Card } from '../types/card';
 
 interface FilterSidebarProps {
@@ -22,6 +24,9 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ cards, onFilterChange }) 
     costs: [],
     inkwell: [],
   });
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const uniqueValues = React.useMemo(() => {
     return {
@@ -47,7 +52,14 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ cards, onFilterChange }) 
     });
   };
 
-  return (
+  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
+  const filterContent = (
     <div className="w-64 bg-white p-4 shadow-md">
       <h2 className="text-xl font-bold mb-4">Filters</h2>
       
@@ -58,6 +70,21 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ cards, onFilterChange }) 
       <FilterSection title="Inkwell" options={uniqueValues.inkwell} selected={filters.inkwell} onChange={value => handleFilterChange('inkwell', value)} />
     </div>
   );
+
+  if (isMobile) {
+    return (
+      <>
+        <IconButton onClick={toggleDrawer(true)} aria-label="filter">
+          <FilterListIcon />
+        </IconButton>
+        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+          {filterContent}
+        </Drawer>
+      </>
+    );
+  }
+
+  return filterContent;
 };
 
 interface FilterSectionProps {
@@ -87,4 +114,3 @@ const FilterSection: React.FC<FilterSectionProps> = ({ title, options, selected,
 };
 
 export default FilterSidebar;
-

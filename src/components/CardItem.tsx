@@ -7,28 +7,30 @@ interface CardItemProps {
 }
 
 function CardItem({ card, onAddToDeck }: CardItemProps) {
-  const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text;
-    return text.substr(0, maxLength) + '...';
+  console.log('Rendering CardItem:', card);
+
+  const truncateText = (text: string | undefined, maxLength: number) => {
+    if (!text) return '';
+    return text.length <= maxLength ? text : `${text.substr(0, maxLength)}...`;
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
       <div className="mb-2">
-        <img src={card.image} alt={card.name} className="w-full h-auto rounded-md" />
+        <img src={card.image} alt={card.name || 'Card Image'} className="w-full h-auto rounded-md" />
       </div>
       <div className="mb-2">
-        <h3 className="text-lg font-semibold">{card.name}</h3>
+        <h3 className="text-lg font-semibold">{card.name || 'Unknown Name'}</h3>
       </div>
       <div className="flex justify-between items-center mb-2 text-xs text-gray-500">
-        <span>{card.rarity}</span>
-        <span>{card.set}</span>
+        <span>{card.rarity || 'Unknown Rarity'}</span>
+        <span>{card.Set_Name || 'Unknown Set'}</span>
       </div>
-      {(card.strength !== null || card.willpower !== null || card.lore !== null) && (
+      {(card.strength !== undefined || card.willpower !== undefined || card.lore !== undefined) && (
         <div className="flex justify-between mb-2 text-xs font-bold">
-          {card.strength !== null && <span className="text-red-600">STR {card.strength}</span>}
-          {card.willpower !== null && <span className="text-blue-600">WILL {card.willpower}</span>}
-          {card.lore !== null && <span className="text-green-600">LORE {card.lore}</span>}
+          {card.strength !== undefined && <span className="text-red-600">STR {card.strength}</span>}
+          {card.willpower !== undefined && <span className="text-blue-600">WILL {card.willpower}</span>}
+          {card.lore !== undefined && <span className="text-green-600">LORE {card.lore}</span>}
         </div>
       )}
       {card.text && (

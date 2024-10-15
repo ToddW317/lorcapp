@@ -4,6 +4,14 @@ import SearchBar from './SearchBar';
 import FilterSidebar from './FilterSidebar';
 import { Card } from '../types/card';
 
+interface Filters {
+  colors: string[];
+  types: string[];
+  rarities: string[];
+  costs: string[];
+  inkwell: string[];
+}
+
 interface CollectionProps {
   cards: Card[];
   onAddToDeck: (cardId: string) => void;
@@ -11,7 +19,7 @@ interface CollectionProps {
 
 function Collection({ cards, onAddToDeck }: CollectionProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     colors: [],
     types: [],
     rarities: [],
@@ -19,14 +27,16 @@ function Collection({ cards, onAddToDeck }: CollectionProps) {
     inkwell: [],
   });
 
+  console.log('Cards in Collection:', cards);
+
   const filteredCards = useMemo(() => {
     return cards.filter(card =>
-      card.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (filters.colors.length === 0 || filters.colors.includes(card.color)) &&
-      (filters.types.length === 0 || filters.types.includes(card.type)) &&
-      (filters.rarities.length === 0 || filters.rarities.includes(card.rarity)) &&
-      (filters.costs.length === 0 || filters.costs.includes(card.cost.toString())) &&
-      (filters.inkwell.length === 0 || filters.inkwell.includes(card.inkwell.toString()))
+      (card.name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) &&
+      (filters.colors.length === 0 || (card.color && filters.colors.includes(card.color))) &&
+      (filters.types.length === 0 || (card.type && filters.types.includes(card.type))) &&
+      (filters.rarities.length === 0 || (card.rarity && filters.rarities.includes(card.rarity))) &&
+      (filters.costs.length === 0 || (card.cost !== undefined && filters.costs.includes(card.cost.toString()))) &&
+      (filters.inkwell.length === 0 || (card.inkwell !== undefined && filters.inkwell.includes(card.inkwell.toString())))
     );
   }, [cards, searchTerm, filters]);
 
@@ -34,7 +44,7 @@ function Collection({ cards, onAddToDeck }: CollectionProps) {
     setSearchTerm(term);
   };
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
   };
 

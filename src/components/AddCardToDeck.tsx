@@ -4,11 +4,12 @@ import { RootState } from '../store';
 import { addCardToDeck, Deck } from '../store/decksSlice';
 
 interface AddCardToDeckProps {
-  cardId: string;
-  onClose: () => void;
-}
+    cardId: string;
+    onClose: () => void;
+    onAddToDeck: (deckId: string, cardId: string, quantity: number) => void;
+  }
 
-export function AddCardToDeck({ cardId, onClose }: AddCardToDeckProps) {
+export function AddCardToDeck({ cardId, onClose, onAddToDeck }: AddCardToDeckProps) {
   const dispatch = useDispatch();
   const decks = useSelector((state: RootState) => state.decks.decks);
   const [selectedDeckId, setSelectedDeckId] = useState<string>('');
@@ -16,7 +17,7 @@ export function AddCardToDeck({ cardId, onClose }: AddCardToDeckProps) {
 
   const handleAddCard = () => {
     if (selectedDeckId) {
-      dispatch(addCardToDeck({ deckId: selectedDeckId, cardId, quantity }));
+      onAddToDeck(selectedDeckId, cardId, quantity);
       onClose();
     }
   };

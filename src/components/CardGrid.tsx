@@ -1,5 +1,4 @@
 import React from 'react'
-import { Grid } from '@mui/material'
 import { Card } from '../types/card'
 import CardItem from './CardItem'
 
@@ -9,14 +8,14 @@ interface CardGridProps {
 }
 
 function CardGrid({ cards, onAddToDeck }: CardGridProps) {
+  console.log('Filtered cards in CardGrid:', cards);
+
   return (
-    <Grid container spacing={2}>
-      {cards.map((card) => (
-        <Grid item xs={6} sm={4} md={3} key={card.id}>
-          <CardItem card={card} onAddToDeck={onAddToDeck} />
-        </Grid>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      {cards.map((card, index) => (
+        <CardItem key={card.id || `${card.Set_Name}-${index}`} card={card} onAddToDeck={onAddToDeck} />
       ))}
-    </Grid>
+    </div>
   )
 }
 

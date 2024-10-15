@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Card } from '../types/card';
 
 export interface Deck {
   id: string;
@@ -34,17 +35,18 @@ export interface Match {
 interface DecksState {
   decks: Deck[];
   matches: Match[];
+  allCards: Card[]; 
 }
 
 const loadState = (): DecksState => {
   try {
     const serializedState = localStorage.getItem('decksState');
     if (serializedState === null) {
-      return { decks: [], matches: [] };
+      return { decks: [], matches: [], allCards: [] };
     }
     return JSON.parse(serializedState);
   } catch (err) {
-    return { decks: [], matches: [] };
+    return { decks: [], matches: [], allCards: [] };
   }
 };
 
@@ -53,7 +55,7 @@ const saveState = (state: DecksState) => {
     const serializedState = JSON.stringify(state);
     localStorage.setItem('decksState', serializedState);
   } catch {
-    // Ignore write errors
+  
   }
 };
 
@@ -106,13 +108,29 @@ export const decksSlice = createSlice({
         if (existingCard) {
           existingCard.quantity += quantity;
         } else {
-          deck.cards.push({ id: cardId, quantity });
+          const cardDetails = state.allCards.find(c => c.id === cardId);
+          if (cardDetails) {
+            deck.cards.push({
+              id: cardId,
+              name: cardDetails.name ?? '',
+              quantity,
+              cost: cardDetails.cost ?? 0,
+              color: cardDetails.color ?? '',
+              type: cardDetails.type ?? '',
+              rarity: cardDetails.rarity ?? ''
+            });
+          }
         }
-        saveState(state);
       }
+    },
+
+    // reducer to set all cards
+    setAllCards: (state, action: PayloadAction<Card[]>) => {
+      console.log('Setting all cards:', action.payload.length);
+      state.allCards = action.payload;
     },
   },
 });
 
-export const { addDeck, updateDeck, deleteDeck, addMatch, addCardToDeck } = decksSlice.actions;
+export const { addDeck, updateDeck, deleteDeck, addMatch, addCardToDeck, setAllCards } = decksSlice.actions;
 export default decksSlice.reducer;

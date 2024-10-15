@@ -22,7 +22,7 @@ function CardCollection() {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   return (
-    <div className="p-4">
+    <div className="flex-1">
       {cards && <Collection cards={cards} onAddToDeck={handleAddToDeck} />}
       {selectedCardId && (
         <AddCardToDeck
